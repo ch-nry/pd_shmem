@@ -1,0 +1,10 @@
+#N canvas 691 732 550 253 10;
+#X obj 28 75 r tables_synchro;
+#X msg 62 105 table shared;
+#X obj 28 163 shmem_table_receive 5465 shared;
+#X obj 271 162 table shared;
+#X text 270 144 table is resize acording to source size;
+#X text 138 74 synchronisatino reception;
+#X text 132 12 synchronous table sharing : receiving part;
+#X connect 0 0 2 0;
+#X connect 1 0 2 0;

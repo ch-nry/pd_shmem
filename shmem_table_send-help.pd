@@ -1,0 +1,20 @@
+#N canvas 117 655 531 336 10;
+#X msg 111 150 table to_be_shared;
+#X obj 50 115 metro 20;
+#X obj 50 91 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X obj 50 228 s tables_synchro;
+#X text 165 228 to be passed between pd and pd~;
+#X text 121 13 synchronus table sharing : sending part;
+#X text 71 37 this is usefull for example \, to deporting pmpd computation
+in a pd~ object;
+#X text 100 290 open shmem_table_receive help file;
+#X msg 112 172 resize 1000;
+#X obj 320 289 shmem_table_receive;
+#X obj 50 203 shmem_table_send 5465 to_be_shared 100;
+#X obj 304 159 table to_be_shared 100;
+#X connect 0 0 10 0;
+#X connect 1 0 10 0;
+#X connect 2 0 1 0;
+#X connect 8 0 10 0;
+#X connect 10 0 3 0;
