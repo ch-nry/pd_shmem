@@ -1,5 +1,9 @@
 #include "m_pd.h"
 #include <stdio.h>
+
+#include "shmem_export.h"
+#include "shmem_version.h"
+
 #ifdef _WIN32
   #define NOMINMAX // avoid interference between macro min and the function defined in this file...
   #include <windows.h>
@@ -344,10 +348,17 @@ void shmem_clear(t_shmem *x)
 		x->share_memory[i] = 0;
 }
 
-void shmem_setup(void)
+SHMEM_EXPORT void shmem_setup(void)
 {
+
     shmem_class = class_new(gensym("shmem"), (t_newmethod)shmem_new, (t_method)shmem_free,
         sizeof(t_shmem), 0, A_DEFFLOAT, A_DEFFLOAT, 0);
+
+    if(!shmem_class)
+      return;
+
+    verbose(4, "shmem version %s (%s)", shmem_tag(), shmem_sha());
+
     class_addmethod(shmem_class, (t_method)shmem_set, gensym("memset"), A_GIMME, 0);
     class_addmethod(shmem_class, (t_method)shmem_dump, gensym("memdump"), A_GIMME, 0);
     class_addmethod(shmem_class, (t_method)shmem_clear, gensym("memclear"), 0);
