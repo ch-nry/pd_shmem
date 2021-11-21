@@ -1,9 +1,3 @@
-#include "m_pd.h"
-#include <stdio.h>
-
-#include "shmem_export.h"
-#include "shmem_version.h"
-
 #ifdef _WIN32
   #define NOMINMAX // avoid interference between macro min and the function defined in this file...
   #include <windows.h>
@@ -14,6 +8,12 @@
   #include <sys/shm.h>
   #include <sys/stat.h>
 #endif // _WIN32
+
+#include "m_pd.h"
+#include <stdio.h>
+
+#include "shmem_export.h"
+#include "shmem_version.h"
 
 typedef struct shmem
 {
