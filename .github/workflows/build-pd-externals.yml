@@ -29,8 +29,8 @@ jobs:
     - name: Archive Package
       uses: actions/upload-artifact@v2
       with:
-        name: share_mem
-        path: build/package/share_mem
+        name: shmem
+        path: build/package/shmem
     
   build_macos:
     runs-on: macos-latest
@@ -55,8 +55,8 @@ jobs:
     - name: Archive Package
       uses: actions/upload-artifact@v2
       with:
-        name: share_mem
-        path: build/package/share_mem
+        name: shmem
+        path: build/package/shmem
 
   build_windows:
     runs-on: windows-latest
@@ -79,8 +79,8 @@ jobs:
     - name: Archive Package
       uses: actions/upload-artifact@v2
       with:
-        name: share_mem
-        path: build/package/share_mem
+        name: shmem
+        path: build/package/shmem
 
   build_windows_x64:
     runs-on: windows-latest
@@ -103,8 +103,8 @@ jobs:
     - name: Archive Package
       uses: actions/upload-artifact@v2
       with:
-        name: share_mem
-        path: build/package/share_mem
+        name: shmem
+        path: build/package/shmem
 
   build-rpi:
     runs-on: ubuntu-latest
@@ -125,8 +125,8 @@ jobs:
     - name: Archive Package
       uses: actions/upload-artifact@v2
       with:
-        name: share_mem
-        path: build/package/share_mem
+        name: shmem
+        path: build/package/shmem
 
   package_release:
     runs-on: ubuntu-latest
@@ -135,20 +135,20 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: share_mem
-          path: share_mem
+          name: shmem
+          path: shmem
       - name: Rezip
         shell: bash
         run: |
           ls
           SHORT=${GITHUB_REF:11} # remove the 'refs/tags/' prefix
           SLUG=${SHORT//\//_} # replace '/' with '_'
-          zip -r share_mem-${SLUG}.zip share_mem
+          zip -r shmem-${SLUG}.zip shmem
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: share_mem*.zip
+          files: shmem*.zip
 
   upload_to_deken:
     runs-on: ubuntu-latest
@@ -157,11 +157,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          path: share_mem-src
+          path: shmem-src
       - uses: actions/download-artifact@v2
         with:
-          name: share_mem
-          path: share_mem
+          name: shmem
+          path: shmem
       - name: Create Deken Package
         shell: bash
         env:
@@ -170,5 +170,5 @@ jobs:
         run: |
           SHORT=${GITHUB_REF:11} # remove the 'refs/tags/' prefix
           SLUG=${SHORT//\//_} # replace '/' with '_'
-          docker run --rm -e DEKEN_USERNAME -e DEKEN_PASSWORD --volume ${PWD}/share_mem-src:/share_mem registry.git.iem.at/pd/deken deken upload -v "${SLUG}" /share_mem
-          docker run --rm -e DEKEN_USERNAME -e DEKEN_PASSWORD --volume ${PWD}/share_mem:/share_mem     registry.git.iem.at/pd/deken deken upload --no-source-error -v "${SLUG}" /share_mem
+          docker run --rm -e DEKEN_USERNAME -e DEKEN_PASSWORD --volume ${PWD}/shmem-src:/shmem registry.git.iem.at/pd/deken deken upload -v "${SLUG}" /shmem
+          docker run --rm -e DEKEN_USERNAME -e DEKEN_PASSWORD --volume ${PWD}/shmem:/shmem     registry.git.iem.at/pd/deken deken upload --no-source-error -v "${SLUG}" /shmem
