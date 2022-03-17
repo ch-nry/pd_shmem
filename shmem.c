@@ -29,7 +29,7 @@ typedef struct shmem
   int segment_size;
 } t_shmem;
 
-static inline t_float min(t_float x1,t_float x2)
+static inline t_float shmem_min(t_float x1,t_float x2)
 {
 	if (x1 <= x2) {
 		return x1;
@@ -56,8 +56,8 @@ int shmem_set_tab(t_shmem *x, const t_symbol *table, int src_offset, int dest_of
 	else if (!garray_getfloatwords(a, &npoints, &vec))
 		pd_error(x, "%s: bad template for tabread", s->s_name);
 	else {
-		index_max = min(x->segment_size-dest_offset, npoints-src_offset);
-		index_max = min(index_max, size);
+		index_max = shmem_min(x->segment_size-dest_offset, npoints-src_offset);
+		index_max = shmem_min(index_max, size);
 		for (i=0; i < index_max; i++)
 			x->share_memory[i+dest_offset] = vec[i+src_offset].w_float;
 	}
@@ -131,8 +131,8 @@ int shmem_dump_tab(t_shmem *x, t_symbol *table, int src_offset, int dest_offset,
         pd_error(x, "%s: bad template for tabwrite", s->s_name);
 	else {
 
-		index_max = min(x->segment_size-src_offset, vecsize-dest_offset);
-		index_max=min(index_max, size);
+		index_max = shmem_min(x->segment_size-src_offset, vecsize-dest_offset);
+		index_max= shmem_min(index_max, size);
 		for (i=0; i<index_max; i++)
 			vec[i+dest_offset].w_float = x->share_memory[i+src_offset];
 	}
