@@ -43,7 +43,7 @@ static inline t_float shmem_min(t_float x1,t_float x2)
  * \brief Set the table to bind to and copy its data to internal buffer.
  *
  */
-int shmem_set_tab(t_shmem *x, const t_symbol *table, int src_offset, int dest_offset, int size)
+int shmem_set_tab(t_shmem *x, t_symbol *table, int src_offset, int dest_offset, int size)
 {
 	int npoints, i, index_max;
 	t_garray *a;
@@ -73,7 +73,7 @@ int shmem_set_tab(t_shmem *x, const t_symbol *table, int src_offset, int dest_of
 void shmem_set(t_shmem *x, t_symbol *unused, int argc, t_atom *argv)
 {
     if ( !x->share_memory ){
-        error("Create a valid shared memory before setting data !");
+        pd_error(x,"Create a valid shared memory before setting data !");
         return;
     }
 
@@ -150,7 +150,7 @@ int shmem_dump_tab(t_shmem *x, t_symbol *table, int src_offset, int dest_offset,
 void shmem_dump(t_shmem *x, t_symbol *unused, int argc, t_atom *argv)
 {
     if ( !x->share_memory ){
-        error("Create a valid shared memory before dumping data !");
+        pd_error(x,"Create a valid shared memory before dumping data !");
         return;
     }
 
@@ -210,7 +210,7 @@ void shmem_allocate(t_shmem *x, t_float fId, t_float fSize)
 {
   int id = (int) fId;
   if ( id < 1 ){
-    error("id should be > 0"); // shmid 0 doesn't seem to work
+    pd_error(x,"id should be > 0"); // shmid 0 doesn't seem to work
     return;
   }
 
@@ -232,7 +232,7 @@ void shmem_allocate(t_shmem *x, t_float fId, t_float fSize)
 
   if (x->m_MapFile == NULL)
   {
-    error("Could not create file mapping object %s - error %ld.",x->m_fileMappingName, GetLastError());
+    pd_error(x,"Could not create file mapping object %s - error %ld.",x->m_fileMappingName, GetLastError());
     outlet_float(x->m_info_out, -1);
     return;
   }
@@ -244,7 +244,7 @@ void shmem_allocate(t_shmem *x, t_float fId, t_float fSize)
                       size);
 
   if ( !x->share_memory ){
-    error("Could not get a view of file %s - error %ld",x->m_fileMappingName, GetLastError());
+    pd_error(x,"Could not get a view of file %s - error %ld",x->m_fileMappingName, GetLastError());
     outlet_float(x->m_info_out, -1);
     return;
   } else {
@@ -275,14 +275,14 @@ void shmem_allocate(t_shmem *x, t_float fId, t_float fSize)
 
     if ((int)shmbuffer.shm_segsz < (int)sizeof(t_float)*x->segment_size) {
       // there was a problem, set object meme size to 0
-      error("could not allocate shmem memory Id : %d, size %d", (int)id,  x->segment_size );
+      pd_error(x,"could not allocate shmem memory Id : %d, size %d", (int)id,  x->segment_size );
       x->segment_size = 0;
       x->share_memory=NULL;
       outlet_float(x->m_info_out, -1);
     }
   }
   else {
-    error("could not allocate shmem memory Id : %d, size %d", (int)id,  x->segment_size );
+    pd_error(x,"could not allocate shmem memory Id : %d, size %d", (int)id,  x->segment_size );
     x->segment_size = 0;
     outlet_float(x->m_info_out, -1);
   }
@@ -323,7 +323,7 @@ void shmem_free(t_shmem *x)
   if ( x->m_MapFile ) CloseHandle( x->m_MapFile );
 #else
   if ( x->share_memory ){
-    if ( shmdt (x->share_memory) == -1) error("shmdt failed at %x", x->share_memory);
+    if ( shmdt (x->share_memory) == -1) pd_error(x,"shmdt failed at %f", *x->share_memory);
   }
   x->share_memory=NULL;
 
@@ -332,7 +332,7 @@ void shmem_free(t_shmem *x)
   if(shm_id>0){
     if (shmctl(shm_id,IPC_STAT, &shm_desc) != -1){
       if(shm_desc.shm_nattch<=0){
-        if (shmctl(shm_id,IPC_RMID, &shm_desc) == -1) error("shmctl remove failed for %d", shm_id);
+        if (shmctl(shm_id,IPC_RMID, &shm_desc) == -1) pd_error(x,"shmctl remove failed for %d", shm_id);
       }
     }
   }
