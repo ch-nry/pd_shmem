@@ -174,7 +174,7 @@ jobs:
 
   package_release:
     runs-on: ubuntu-latest
-    needs: [ build_ubuntu, build_macos, build_windows, build_windows_x64, build-rpi ]
+    needs: [ build_ubuntu, build_macos, build_windows, build_windows_x64, build_rpi ]
     steps:
           # Download all artifacts
       - uses: actions/download-artifact@v4
@@ -209,13 +209,13 @@ jobs:
       - name: Merge Artifacts
         run: |
           mkdir shmem
-          cp -rn artifacts/*/* pmpd/
+          cp -rn artifacts/*/* shmem/
       # Zip the merged directory
       - name: Rezip
         run: |
           SHORT=${GITHUB_REF:11} # remove the 'refs/tags/' prefix
           SLUG=${SHORT//\//_} # replace '/' with '_'
-          zip -r pmpd-${SLUG}.zip pmpd
+          zip -r shmem-${SLUG}.zip shmem
       - name: Upload release content as Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -229,7 +229,7 @@ jobs:
 
   upload_to_deken:
     runs-on: ubuntu-latest
-    needs: [ build_ubuntu, build_macos, build_windows, build_windows_x64, build-rpi ]
+    needs: [ build_ubuntu, build_macos, build_windows, build_windows_x64, build_rpi ]
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     steps:
       - uses: actions/checkout@v2
