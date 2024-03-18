@@ -3,6 +3,7 @@ SHARE_MEM
 
 version 1. - nov 2012
 cyrille henry - nicolas montgermont
+windows version : A.Villeret
 
 INFOS
 =====
