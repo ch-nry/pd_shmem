@@ -97,7 +97,7 @@ void shmem_set(t_shmem *x, t_symbol *unused, int argc, t_atom *argv)
         return;
     }
 
-    int i, j, index_max, shmem_offset, array_offset, size;
+    int i, index_max, shmem_offset, array_offset, size;
 
 	if (argc < 1) {
 		pd_error(x, "shmem usage : [memset table_name [table_name []]< or [memset src_offset data [dest_offset]< (data can be a float, a list, or a table name)");
@@ -235,7 +235,7 @@ void shmem_allocate(t_shmem *x, t_float fId, t_float fSize)
   }
 
   x->segment_size = (int) fSize;
-  int size = sizeof(t_float)*x->segment_size;
+  //int size = sizeof(t_float)*x->segment_size;
 #ifdef  _WIN32
   if ( x->share_memory ) UnmapViewOfFile( x->share_memory );
   if ( x->m_MapFile ) CloseHandle( x->m_MapFile );
