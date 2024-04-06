@@ -235,8 +235,8 @@ void shmem_allocate(t_shmem *x, t_float fId, t_float fSize)
   }
 
   x->segment_size = (int) fSize;
-  //int size = sizeof(t_float)*x->segment_size;
 #ifdef  _WIN32
+  int size = sizeof(t_float)*x->segment_size;
   if ( x->share_memory ) UnmapViewOfFile( x->share_memory );
   if ( x->m_MapFile ) CloseHandle( x->m_MapFile );
 
